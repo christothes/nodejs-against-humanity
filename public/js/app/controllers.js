@@ -53,6 +53,52 @@ angular.module('myApp.controllers', [])
 
         GameService.playerName = $routeParams.playerName;
 
+        //ng-show helper functions
+        $scope.showNotificationSelectCard = function() {
+            return !$scope.currentPlayer.isCzar &&
+                !$scope.currentPlayer.selectedWhiteCardId &&
+                $scope.game.isStarted &&
+                !$scope.game.isReadyForScoring
+        };
+
+        $scope.showNotificationWaitingOnCzar = function() {
+            return !$scope.currentPlayer.isCzar &&
+                $scope.game.isReadyForScoring &&
+                !$scope.game.isReadyForReview
+        };
+
+        $scope.showNotificationWaitingOnCards = function() {
+            return ($scope.currentPlayer.isCzar || $scope.currentPlayer.selectedWhiteCardId) &&
+                !$scope.game.isReadyForScoring
+        };
+
+        $scope.showNotificationSelectWinner = function() {
+            return $scope.currentPlayer.isCzar &&
+                $scope.game.isReadyForScoring &&
+                !$scope.game.isReadyForReview
+        };
+
+        $scope.showWhiteCardList = function() {
+            return !$scope.currentPlayer.isCzar && $scope.game.isStarted && !$scope.game.isReadyForScoring
+        };
+
+        $scope.showSelectedWhiteCardList = function() {
+            return ($scope.currentPlayer.isCzar && $scope.game.isStarted && $scope.game.isReadyForScoring) ||
+                $scope.game.isReadyForReview
+        };
+        //end ng-show helper functions
+
+        $scope.buildWinningText = function(history) {
+            var text = history.black;
+
+            if(text.indexOf("__________") != -1) {
+                text = text.replace("__________", "<b>" + history.white + "</b>");
+            } else {
+                text = text + " <b>" + history.white + "</b>"
+            }
+            return text
+        };
+
         $scope.whiteCardNonNull = function(item) {
             return item.selectedWhiteCardId != undefined;
         }
